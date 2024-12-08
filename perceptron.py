@@ -1,15 +1,27 @@
 import math
+import os
 
 import numpy as np
+import pandas as pd
 
 def perceptron(X, w, b):
   z = np.dot(X, w) + b
   # return 1 if z > 0 else 0
   return max(0, z) , 1 if z > 0 else 0
 
+#
+# train_data = np.array([[0,0],[0,1],[1,0],[1,1]])
+# val_data = np.array([0,1,1,1])
+print(os.getcwd())
+df = pd.read_csv("perceptron_train__data/OR_gate_data.csv",header=None)
+# Create a NumPy array with the first two columns
+train_data = df.iloc[:, :2].values
 
-train_data = np.array([[0,0],[0,1],[1,0],[1,1]])
-val_data = np.array([0,1,1,1])
+# Create a NumPy array with the third column
+val_data = df.iloc[:, 2].values
+
+
+
 import random
 w = np.array([random.random(),-random.random()])  # Weights initialization
 w = np.array([0.1, -0.6])  # Weights initialization manually
@@ -66,7 +78,7 @@ plt.grid(True)
 plt.show()
 
 ##manually verify the ourput
-while True:
+for i in range(10) :
   X0 = int(input("insert X0 : "))
   X1 = int(input("insert X1 : "))
   Xin = np.array([X0,X1])
