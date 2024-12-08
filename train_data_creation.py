@@ -4,12 +4,12 @@ print(random.randrange(0,2))
 import csv
 
 # Specify the file name
-filename = 'perceptron_train__data/1000_point_data.csv'
+filename = 'perceptron_train__data/100000_point_data.csv'
 
 # Write the data to the CSV file
 with open(filename, 'w', newline='') as csvfile:
     csvwriter = csv.writer(csvfile)
-    for i in range(1000):
+    for i in range(100000):
         X = random.randrange(0,20)
         Y = random.randrange(0,20)
         C = 1 if X > 10 else 0
