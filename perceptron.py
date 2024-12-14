@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import random
 import matplotlib.pyplot as plt
-
+from sklearn import preprocessing
 
 
 def perceptron(X, w, b):
@@ -11,7 +11,6 @@ def perceptron(X, w, b):
   # return max(0,z)
   # return 1 / (1 + np.exp(-z)) #softmax function
   return  1 if z > 0 else 0
-  # return 1 / (1 + math.exp(-z))
 
 def binary_log_loss(y_true, y_pred):
   """
@@ -34,28 +33,28 @@ def binary_log_loss(y_true, y_pred):
   return loss
 
 
-df = pd.read_csv("perceptron_train__data/1000001_point_data.csv",header=None)
+df = pd.read_csv("perceptron_train__data/1000002_point_data.csv",header=None)
 # Create a NumPy array with the first two columns
-train_data = df.iloc[:, :2].values
+not_normalized_train_data = df.iloc[:, :2].values
 
+train_data = not_normalized_train_data/2000
+# print(train_data.head())
 # Create a NumPy array with the third column
 val_data = df.iloc[:, 2].values
 
 
 
 #Hyperparameters
-# w = np.array([random.random(),random.random()])  # Weights initialization random
-# b = random.random() # Bias initialization random
-w = np.array([random.uniform(0,20),random.uniform(0,20)])  # Weights initialization random
-b = random.uniform(0,20) # Bias initialization
+w = np.array([random.random(),random.random()])  # Weights initialization random
+b = np.random.randn(1) # Bias initialization random
+# w = np.array([random.uniform(0,2000),random.uniform(0,2000)])  # Weights initialization random
+# b = random.uniform(0,2000) # Bias initialization
 # w = np.array([0.1, 5.1])  # Weights initialization manually
-# b = 20 # Bias initialization manually
-learning_rate = 0.3
-decay_factor = 0.95
+learning_rate = 0.1
+decay_factor = 1
 batch_size = 100
 
 # For plotting
-Biases = w
 LogLossArray = np.array([0])
 
 #this is for batch training
@@ -63,51 +62,33 @@ for p in range(0, len(train_data), batch_size):
     batch_train = train_data[p:p+batch_size]
     batch_val = val_data[p:p+batch_size]
     dw = np.zeros_like(w)
-    db=0
-    Loss=0
+    db = np.zeros_like(b)
+    Loss = 0
 
     for i, j in zip(batch_train, batch_val):
       output = perceptron(i, w, b)
       # print(i, 'desired', j, 'actual', output)
       dw += (j-output) * i
-      db += j-output
+      db += (j-output)
       Loss += binary_log_loss(j,output)
 
     meanLogLoss = Loss/batch_size
     LogLossArray = np.vstack((LogLossArray, meanLogLoss))
 
-    print('LogLoss Error = ', meanLogLoss)
-
+    print('meanLogLoss Error = ', meanLogLoss)
     print('weights:', w, 'bias : ', b)
-    print(dw,db)
-    Biases = np.vstack((Biases, w))
-    # if error.any() >= 0 :
+    print('dw = ',dw,'......db = ',db)
     w += learning_rate * meanLogLoss * dw/batch_size
     b += learning_rate * meanLogLoss * db/batch_size
-    # else :
-    #   w -= learning_rate * meanLogLoss *error
-      # b -= learning_rate * meanLogLoss *error
     learning_rate *= decay_factor
 
 
-#This is for single entry
-# for i,j in zip(train_data,val_data):
-#   print('weights:',w,'bias : ', b)
-#   Biases = np.vstack((Biases,w))
-#   output = perceptron(i, w, b)
-#   print(i,'desired',j,'actual',output)
-#   # error = math.sqrt((output - j)**2)
-#   error= j-output
-#   print('Error = ',error)
-#
-#   w += learning_rate * error * i
-#
-#   b += learning_rate * error
-#
-#   learning_rate *=decay_factor
 print(f'm ={-w[0]/w[1]} , c = {-b/w[1]}')
 print(f'w = {w}, b = {b},learning rate = {learning_rate}')
 print('training Complete')
+
+
+
 
 
 ## create scatterplot of points and decision boundary
@@ -124,7 +105,7 @@ m = -w[0]/w[1]  # Slope
 c = -b/w[1]  # Intercept
 
 # Generate x values for the line
-x_line = np.linspace(min(x), max(x), 100)
+x_line = np.linspace(min(x), max(x))
 y_line = m * x_line + c
 plt.plot(x_line, y_line, color='red', label='y = mx + c')
 
