@@ -33,11 +33,11 @@ def binary_log_loss(y_true, y_pred):
   return loss
 
 
-df = pd.read_csv("perceptron_train__data/1000002_point_data.csv",header=None)
+df = pd.read_csv("perceptron_train__data/200_point_data.csv",header=None)
 # Create a NumPy array with the first two columns
 not_normalized_train_data = df.iloc[:, :2].values
 
-train_data = not_normalized_train_data/2000
+train_data = not_normalized_train_data/20
 # print(train_data.head())
 # Create a NumPy array with the third column
 val_data = df.iloc[:, 2].values
@@ -49,10 +49,12 @@ w = np.array([random.random(),random.random()])  # Weights initialization random
 b = np.random.randn(1) # Bias initialization random
 # w = np.array([random.uniform(0,2000),random.uniform(0,2000)])  # Weights initialization random
 # b = random.uniform(0,2000) # Bias initialization
-# w = np.array([0.1, 5.1])  # Weights initialization manually
-learning_rate = 0.1
-decay_factor = 1
-batch_size = 100
+w = np.array([0.5, 0.51])  # Weights initialization manually
+b = np.array([-1.0])  # bias initialization manually
+
+learning_rate = 0.01
+decay_factor = 0.9999
+batch_size = 1
 
 # For plotting
 LogLossArray = np.array([0])
